@@ -152,6 +152,7 @@
         db.ref('responses').once('value').then(snapshot => {
           const data = snapshot.val() || {};
           const counts = {};
+          const whoSelected = {};
           const userCount = Object.keys(data).length;
 
           for (const name in data) {
@@ -159,6 +160,8 @@
             for (const key in userAvail) {
               if (userAvail[key]) {
                 counts[key] = (counts[key] || 0) + 1;
+                if (!whoSelected[key]) whoSelected[key] = [];
+                whoSelected[key].push(name);
               }
             }
           }
@@ -184,6 +187,9 @@
               const td = document.createElement('td');
               td.style.backgroundColor = count ? color : '#fff';
               td.textContent = count > 0 ? count : '';
+              if (whoSelected[key]) {
+                td.title = whoSelected[key].join(', ');
+              }
               row.appendChild(td);
             });
 
